@@ -90,7 +90,7 @@ class TaskManagerBot(token: String) : TelegramLongPollingBot(token) {
         val offsetInIntFromUTC = text.toInt()
         val offsetInUnix = 7200000 - offsetInIntFromUTC.toLong() * 120 * 10000 * 3
         databaseRepository.addUser(chatId, offsetInUnix)
-        sendTextMessage(chatId, greetingMessage, true)
+        sendTextMessage(chatId, greetingMessage, false)
     }
 
 
@@ -105,11 +105,11 @@ class TaskManagerBot(token: String) : TelegramLongPollingBot(token) {
 
     private fun help(chatId: Long) {
         val helpMessage = """
-            1) /start - greeting message.
-            2) /help - list of my commands and how they works.
-            3) /list - list of your upcoming tasks.
-            4) /add_task - add new task to the your task list.
-            5) /delete task - delete a task from the task list by index.
+            1) /start - 👋greeting message and user register.
+            2) /help - ❓list of my commands and how they works.
+            3) /list - 📋list of your upcoming tasks.
+            4) /add_task - ✅add new task to the your task list.
+            5) /delete task - ❌delete a task from the task list by index.
         """.trimIndent()
         databaseRepository.addHistoryRecord(
             chatId,

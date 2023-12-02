@@ -233,7 +233,7 @@ object SQLService {
 
     fun findTaskForNotify(currentTimeInUnix: Long): List<TaskRecord> { // 86700 - 86100 -> 600 * 1000 == 5 min => 1 min == 120 * 1000
         try {
-            val sql1 = """SELECT * FROM tasks WHERE (notified_times < 4)
+            val sql1 = """SELECT * FROM tasks WHERE (notified_times < 1)
                 and ((time_offset - $currentTimeInUnix) < 86700000) and
                  ((time_offset - $currentTimeInUnix) > 86100000);
         """.trimMargin()
