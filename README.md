@@ -4,6 +4,7 @@
 
 <h2>Implementation details</h2>
 <p>I store telegram bot token as environment variable.</p>
+<p>Also i use mysql as dbms, so to start my bot locally, you have tp install mysql and run it on localhost:3306</p>
 
 <h2>Future plans</h2>
 <ul>
