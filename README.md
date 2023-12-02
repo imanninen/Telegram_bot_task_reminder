@@ -4,7 +4,7 @@ As a student I have a lot of deadlines, which I have to remember and don't forge
 
 ## Implementation details
 I store telegram bot token as environment variable.
-Also i use mysql as dbms, so to start my bot locally, you have tp install mysql and run it on `localhost:3306`
+Also I use mysql as dbms, so to start my bot locally, you have tp install mysql and run it on `localhost:3306`
 
 ## Future plans
 * I whant to make bot asynchronous using coroutines. I guess it is mandatory if I want to publish it as a product.
