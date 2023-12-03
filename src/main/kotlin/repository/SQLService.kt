@@ -10,7 +10,8 @@ object SQLService {
     init {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver")
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "soplaotves")
+            val password = System.getenv("MY_SQL_PASSWORD")
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", password)
             println("Successfully connected to SQL server")
         } catch (e: Exception) {
             e.printStackTrace()
