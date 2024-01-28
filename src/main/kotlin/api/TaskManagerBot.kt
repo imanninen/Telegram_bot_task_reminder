@@ -4,8 +4,6 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.TelegramBotsApi
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession
 import repository.SQLService
@@ -34,28 +32,10 @@ class TaskManagerBot(token: String) : TelegramLongPollingBot(token) {
         }
     }
 
-    private fun sendTextMessage(chatId: Long, text: String, sendButtons: Boolean = false) {
+    private fun sendTextMessage(chatId: Long, text: String) {
         val sendMessage = SendMessage()
         sendMessage.chatId = chatId.toString()
         sendMessage.text = text
-        if (sendButtons) {
-            val keyboardMarkup = ReplyKeyboardMarkup()
-            val keyboard = mutableListOf<KeyboardRow>()
-            val row1 = KeyboardRow()
-            val row2 = KeyboardRow()
-            val row3 = KeyboardRow()
-
-            row1.add("/start")
-            row1.add("/help")
-            row2.add("/list")
-            row2.add("/add_task")
-            row3.add("/delete_task")
-            keyboard.add(row1)
-            keyboard.add(row2)
-            keyboard.add(row3)
-            keyboardMarkup.keyboard = keyboard
-            sendMessage.replyMarkup = keyboardMarkup
-        }
         execute(sendMessage)
     }
 
@@ -87,10 +67,14 @@ class TaskManagerBot(token: String) : TelegramLongPollingBot(token) {
         val greetingMessage = """
             Welcome to Task Manager bot! I can save upcoming tasks and remind you about it. Click /help to read list of supported commands.
         """.trimIndent()
+        if (! isNumber(text)) {
+            sendTextMessage(chatId, "This is not a number.")
+            return
+        }
         val offsetInIntFromUTC = text.toInt()
-        val offsetInUnix = 7200000 - offsetInIntFromUTC.toLong() * 120 * 10000 * 3
+        val offsetInUnix = subtractOffset(offsetInIntFromUTC)
         databaseRepository.addUser(chatId, offsetInUnix)
-        sendTextMessage(chatId, greetingMessage, false)
+        sendTextMessage(chatId, greetingMessage)
     }
 
 

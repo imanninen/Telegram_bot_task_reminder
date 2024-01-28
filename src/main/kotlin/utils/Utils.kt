@@ -50,3 +50,5 @@ fun isNumber(text: String): Boolean {
     text.forEach { if (!it.isDigit()) return false }
     return true
 }
+
+fun subtractOffset(offsetInIntFromUTC: Int): Long = 7200000 - offsetInIntFromUTC.toLong() * 120 * 10000 * 3
