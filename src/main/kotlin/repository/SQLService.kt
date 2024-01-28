@@ -175,19 +175,7 @@ object SQLService {
         try {
             val sql = """SELECT * FROM tasks WHERE chat_id = '$chatId';
         """.trimMargin()
-            val query = connection!!.prepareStatement(sql)
-            val result = query.executeQuery()
-            val taskList = mutableListOf<TaskRecord>()
-            while (result.next()) {
-                val id = result.getInt(1)
-                val chat = result.getLong(2)
-                val desc = result.getString(3)
-                val dueToDateUnix = result.getLong(4)
-                val offset = result.getLong(5)
-                val task = TaskRecord(id, chat, desc, dueToDateUnix, offset)
-                taskList.add(task)
-            }
-            return taskList
+            return getListOfTasks(sql)
         } catch (e: Exception) {
             println("Error: $e")
             return emptyList()
@@ -198,19 +186,7 @@ object SQLService {
         try {
             val sql = """SELECT * FROM tasks WHERE (time_offset - $currentTime) <= 0; 
         """.trimMargin()
-            val query = connection!!.prepareStatement(sql)
-            val result = query.executeQuery()
-            val taskList = mutableListOf<TaskRecord>()
-            while (result.next()) {
-                val id = result.getInt(1)
-                val chat = result.getLong(2)
-                val desc = result.getString(3)
-                val dueToDateUnix = result.getLong(4)
-                val offset = result.getLong(5)
-                val task = TaskRecord(id, chat, desc, dueToDateUnix, offset)
-                taskList.add(task)
-            }
-            return taskList
+            return getListOfTasks(sql)
         } catch (e: Exception) {
             println("Error: $e")
             return emptyList()
@@ -238,36 +214,11 @@ object SQLService {
                 and ((time_offset - $currentTimeInUnix) < 86700000) and
                  ((time_offset - $currentTimeInUnix) > 86100000);
         """.trimMargin()
-            val query1 = connection!!.prepareStatement(sql1)
-            var result = query1.executeQuery()
-            val taskToNotifyList = mutableListOf<TaskRecord>()
-
-            while (result.next()) {
-                val id = result.getInt(1)
-                val chat = result.getLong(2)
-                val desc = result.getString(3)
-                val dueToDateUnix = result.getLong(4)
-                val offset = result.getLong(5)
-                val notifiedTimes = result.getInt(6)
-                val task = TaskRecord(id, chat, desc, dueToDateUnix, offset, 24, notifiedTimes)
-                taskToNotifyList.add(task)
-            }
+            val taskToNotifyList = getListOfTasks(sql1).toMutableList()
             val sql2 = """SELECT * FROM tasks WHERE (notified_times < 2) and
                 ((time_offset - $currentTimeInUnix) < 11100000) and ((time_offset - $currentTimeInUnix) > 10500000);
         """.trimMargin()
-            val query2 = connection!!.prepareStatement(sql2)
-            result = query2.executeQuery()
-
-            while (result.next()) {
-                val id = result.getInt(1)
-                val chat = result.getLong(2)
-                val desc = result.getString(3)
-                val dueToDateUnix = result.getLong(4)
-                val offset = result.getLong(5)
-                val notifiedTimes = result.getInt(6)
-                val task = TaskRecord(id, chat, desc, dueToDateUnix, offset, 3, notifiedTimes)
-                taskToNotifyList.add(task)
-            }
+            taskToNotifyList += getListOfTasks(sql2)
             return taskToNotifyList
         } catch (e: Exception) {
             println("Error in findTaskForNotify: $e")
@@ -303,4 +254,21 @@ object SQLService {
             false
         }
     }
+
+    private fun getListOfTasks(sqlQuery: String): List<TaskRecord> {
+        val query = connection!!.prepareStatement(sqlQuery)
+        val result = query.executeQuery()
+        val taskList = mutableListOf<TaskRecord>()
+        while (result.next()) {
+            val id = result.getInt(1)
+            val chat = result.getLong(2)
+            val desc = result.getString(3)
+            val dueToDateUnix = result.getLong(4)
+            val offset = result.getLong(5)
+            val task = TaskRecord(id, chat, desc, dueToDateUnix, offset)
+            taskList.add(task)
+        }
+        return taskList
+    }
+
 }

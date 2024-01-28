@@ -16,7 +16,7 @@ data class HistoryRecord(
     val data: String?
 )
 
-enum class Stage(val string: String){
+enum class Stage(val string: String) {
     PROCESS_DESC("PROCESS_DESC"),
     PROCESS_DATE("PROCESS_DATE"),
     PROCESS_INDEX("PROCESS_INDEX"),

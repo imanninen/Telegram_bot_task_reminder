@@ -66,7 +66,7 @@ class TaskManagerBot(token: String) : TelegramLongPollingBot(token) {
             lastOperation.operation == Operation.DELETE_TASK -> deleteTask(chatId, text)
             lastOperation.operation == Operation.ADD_TASK -> addTask(chatId, text)
             lastOperation.operation == Operation.START -> start(chatId, text)
-            else -> sendTextMessage(chatId, "Type /help to see list of commands.")
+            else -> sendTextMessage(chatId, "Invalid command! Type /help to see list of commands.")
         }
     }
 
@@ -265,7 +265,12 @@ class TaskManagerBot(token: String) : TelegramLongPollingBot(token) {
         when {
             lastHistoryRecord == null -> deleteTaskProcessIndex(chatId)
             lastHistoryRecord.operation == Operation.DELETE_TASK && lastHistoryRecord.stage == Stage.PROCESS_INDEX ->
-                deleteTaskByIndex(chatId, text.toInt())
+                run {
+                    if (isNumber(text))
+                        deleteTaskByIndex(chatId, text.toInt())
+                    else
+                        sendTextMessage(chatId, "invalid index. Please try again!")
+                }
 
             else -> deleteTaskProcessIndex(chatId)
         }

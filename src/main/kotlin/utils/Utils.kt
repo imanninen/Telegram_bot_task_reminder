@@ -18,7 +18,7 @@ fun parseUnixTimeToStringDate(date: Long, offset: Long = 0L): String {
     return SimpleDateFormat("HH:mm dd.MM.yyyy").format(parsedTime)
 }
 
-fun fromOperationToString(operation: Operation): String = when(operation) {
+fun fromOperationToString(operation: Operation): String = when (operation) {
     Operation.START -> "START"
     Operation.LIST -> "LIST"
     Operation.HELP -> "HELP"
@@ -26,7 +26,7 @@ fun fromOperationToString(operation: Operation): String = when(operation) {
     Operation.DELETE_TASK -> "DELETE_TASK"
 }
 
-fun fromStringToOperation(operation: String): Operation = when(operation) {
+fun fromStringToOperation(operation: String): Operation = when (operation) {
     "START" -> Operation.START
     "LIST" -> Operation.LIST
     "HELP" -> Operation.HELP
@@ -35,7 +35,7 @@ fun fromStringToOperation(operation: String): Operation = when(operation) {
     else -> Operation.HELP // ??
 }
 
-fun fromStringToStage(stage: String): Stage = when(stage) {
+fun fromStringToStage(stage: String): Stage = when (stage) {
     "PROCESS_DESC" -> Stage.PROCESS_DESC
     "PROCESS_DATE" -> Stage.PROCESS_DATE
     "PROCESS_INDEX" -> Stage.PROCESS_INDEX
@@ -44,4 +44,9 @@ fun fromStringToStage(stage: String): Stage = when(stage) {
     "NOTHING" -> Stage.NOTHING
     "FAILED" -> Stage.FAILED
     else -> Stage.NOTHING
+}
+
+fun isNumber(text: String): Boolean {
+    text.forEach { if (!it.isDigit()) return false }
+    return true
 }
